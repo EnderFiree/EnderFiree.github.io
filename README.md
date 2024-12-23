@@ -273,19 +273,15 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AZxfqNzIB_vmIsIyI-j8y5effKA3WbJRsj0xRNUbV519wBwaI3UfCTP9OuTRtJ4p4Hx_LM0oP8TCzW2f&currency=EUR"></script>
     <script>
         const products = [
-            { name: "Neon Dragon Fly Ride", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Golden Unicorn Fly Ride", price: 10.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/golden_unicorn_298238286076469622083342459086715019609.png?v=2" },
-            { name: "Frost Fury Fly Ride", price: 28.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_fury_338054152804925491180175985441581445553.png?v=2" },
-            { name: "Shadow Dragon Fly Ride", price: 79.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/shadow_dragon_145223320826250720186133074893373364978.png?v=2" },
-            { name: "Neon Turtle Fly Ride", price: 36.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/turtle_66206713544449291159512730973707281506.png?v=2" },
-            { name: "Neon Kangaroo Fly Ride", price: 48.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/kangaroo_256601391990744684971371644452415126665.png?v=2" },
-            { name: "Frost Dragon Fly Ride", price: 69.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_dragon_288374801322567532732771106755523238591.png?v=2" },
-            { name: "Arctic Reindeer Fly Ride", price: 13.99, img: "https://i.pinimg.com/736x/31/50/c4/3150c4548176b49d160a2d135446bc76.jpg" },
-            { name: "Evil Unicorn Fly Ride", price: 8.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/evil_unicorn_322013027795630172656118720790513444450.png?v=2" },
-            { name: "Neon Owl Fly Ride", price: 21.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/owl_103046694030979270228419086227017441788.png?v=2" },
-            { name: "Neon Giraffe Fly Ride", price: 34.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/giraffe_241345040581239693008299843849746260574.png?v=2" },
-            { name: "Mega Crow Fly Ride", price: 49.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/crow_130478830137781879202388351390130552227.png?v=2" },
-            { name: "Neon Bat Dragon Fly Ride", price: 80.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/bat_dragon_146462647561927032198913846494863876793.png?v=2" },
+            { name: "Neon Dragon Fly Ride", price: 2.99, img: "images/dragon_124403728485816668684803314274571297384.png" },
+            { name: "Golden Unicorn Fly Ride", price: 10.99, img: "images/golden_unicorn_298238286076469622083342459086715019609.png" },
+            { name: "Frost Fury Fly Ride", price: 28.99, img: "images/frost_fury_338054152804925491180175985441581445553.png" },
+            { name: "Shadow Dragon Fly Ride", price: 79.99, img: "images/shadow_dragon_145223320826250720186133074893373364978.png" },
+            { name: "Neon Turtle Fly Ride", price: 36.99, img: "images/turtle_66206713544449291159512730973707281506.png" },
+            { name: "Neon Kangaroo Fly Ride", price: 48.99, img: "images/kangaroo_256601391990744684971371644452415126665.png" },
+            { name: "Frost Dragon Fly Ride", price: 69.99, img: "images/frost_dragon_288374801322567532732771106755523238591.png" },
+            { name: "Arctic Reindeer Fly Ride", price: 13.99, img: "images/arctic_reindeer_322013027795630172656118720790513444450.png" },
+            { name: "Evil Unicorn Fly Ride", price: 8.99, img: "images/evil_unicorn_322013027795630172656118720790513444450.png" },
         ];
 
         let cart = [];
@@ -307,76 +303,90 @@
         }
 
         function updateCartUI() {
-            const cartList = document.getElementById("cart");
-            cartList.innerHTML = "";
+            const cartSection = document.getElementById('cart');
+            const totalSection = document.getElementById('total');
+            const paypalButtonContainer = document.getElementById('paypal-button-container');
+            cartSection.innerHTML = '';
             cart.forEach((item, index) => {
-                const li = document.createElement("li");
-                li.innerHTML = `<span>${item.name} - €${item.price}</span> 
-                    <button onclick="removeFromCart(${index})">Remove</button>`;
-                cartList.appendChild(li);
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} - €${item.price.toFixed(2)} <button onclick="removeFromCart(${index})">Rimuovi</button>`;
+                cartSection.appendChild(li);
             });
-            document.getElementById("total").textContent = `Total: €${total.toFixed(2)}`;
-            renderPayPalButton();
-        }
+            totalSection.innerHTML = `Totale: €${total.toFixed(2)}`;
 
-        function updateCartCounter() {
-            const cartCounter = document.getElementById("cart-counter");
-            cartCounter.textContent = cart.length;
-            // Il contatore del carrello è visibile solo quando ci sono elementi nel carrello
-            cartCounter.style.display = cart.length > 0 ? "block" : "none";
-        }
-
-        function renderPayPalButton() {
-            if (cart.length > 0) {
-                paypal.Buttons({
-                    createOrder: function(data, actions) {
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: total.toFixed(2)
-                                }
-                            }]
-                        });
-                    },
-                    onApprove: function(data, actions) {
-                        return actions.order.capture().then(function(details) {
-                            alert('Transaction completed by ' + details.payer.name.given_name);
-                        });
-                    }
-                }).render('#paypal-button-container');
+            if (total > 0) {
+                paypalButtonContainer.style.display = 'block';
+                renderPaypalButton();
+            } else {
+                paypalButtonContainer.style.display = 'none';
             }
         }
 
+        function renderPaypalButton() {
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: total.toFixed(2)
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Pagamento effettuato con successo!');
+                        cart = [];
+                        total = 0;
+                        updateCartUI();
+                        updateCartCounter();
+                    });
+                },
+                onError: function(err) {
+                    console.error('PayPal errore', err);
+                }
+            }).render('#paypal-button-container');
+        }
+
         function showNotification(message) {
-            const notification = document.getElementById("notification");
-            notification.textContent = message;
-            notification.style.display = "block";
-            setTimeout(function() {
-                notification.style.display = "none";
+            const notification = document.getElementById('notification');
+            notification.innerHTML = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
             }, 3000);
         }
 
-        function toggleCart() {
-            const cartSection = document.getElementById("cart-section");
-            cartSection.style.display = cartSection.style.display === "none" || !cartSection.style.display ? "block" : "none";
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            counter.innerHTML = cart.length;
+            counter.style.display = cart.length > 0 ? 'block' : 'none';
         }
 
-        document.getElementById("toggle-cart").addEventListener("click", toggleCart);
+        function toggleCart() {
+            const cartSection = document.getElementById('cart-section');
+            const isVisible = cartSection.style.display === 'block';
+            cartSection.style.display = isVisible ? 'none' : 'block';
+        }
 
-        window.onload = function() {
-            const productList = document.getElementById("product-list");
+        document.getElementById('toggle-cart').addEventListener('click', toggleCart);
+
+        function renderProducts() {
+            const productList = document.getElementById('product-list');
             products.forEach(product => {
-                const productDiv = document.createElement("div");
-                productDiv.classList.add("product");
-                productDiv.innerHTML = `
+                const productElement = document.createElement('div');
+                productElement.classList.add('product');
+                productElement.innerHTML = `
                     <img src="${product.img}" alt="${product.name}">
                     <h3>${product.name}</h3>
-                    <p>€${product.price}</p>
-                    <button onclick="addToCart('${product.name}', ${product.price})">Add to cart</button>
+                    <p>€${product.price.toFixed(2)}</p>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Aggiungi al carrello</button>
                 `;
-                productList.appendChild(productDiv);
+                productList.appendChild(productElement);
             });
         }
+
+        renderProducts();
     </script>
 </body>
 </html>
