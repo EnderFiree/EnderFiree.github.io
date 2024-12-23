@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adopt Me - Negozio Pet</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"> <!-- Assicurati che questa immagine esista nel repository -->
+
     <!-- Font Awesome per l'icona del carrello -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -256,127 +257,115 @@
     <div class="cart-counter" id="cart-counter"></div>
 
     <div class="cart-section" id="cart-section">
-        <h2>Carrello</h2>
-        <ul class="cart-items" id="cart"></ul>
+        <h3>Il tuo Carrello</h3>
+        <ul class="cart-items" id="cart-items"></ul>
         <div class="total" id="total">Totale: €0</div>
-        <div class="paypal-button" id="paypal-button-container"></div>
+        <div class="paypal-button" id="paypal-button"></div>
     </div>
-
-    <!-- Notifica -->
-    <div class="notification" id="notification">Product added to cart!</div>
 
     <div class="container">
-        <div class="products" id="product-list"></div>
+        <h2>Adotta un Pet</h2>
+        <div class="products" id="products">
+            <!-- I prodotti verranno inseriti dinamicamente via JS -->
+        </div>
     </div>
 
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AZxfqNzIB_vmIsIyI-j8y5effKA3WbJRsj0xRNUbV519wBwaI3UfCTP9OuTRtJ4p4Hx_LM0oP8TCzW2f&currency=EUR"></script>
+    <!-- Notifica per l'aggiunta al carrello -->
+    <div class="notification" id="notification">Aggiunto al carrello!</div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=your-client-id"></script>
     <script>
-        const products = [
-            { name: "Neon Dragon Fly Ride", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Golden Unicorn Fly Ride", price: 10.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/golden_unicorn_298238286076469622083342459086715019609.png?v=2" },
-            { name: "Frost Fury Fly Ride", price: 28.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_fury_338054152804925491180175985441581445553.png?v=2" },
-            { name: "Shadow Dragon Fly Ride", price: 79.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/shadow_dragon_145223320826250720186133074893373364978.png?v=2" },
-            { name: "Neon Turtle Fly Ride", price: 36.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/turtle_66206713544449291159512730973707281506.png?v=2" },
-            { name: "Neon Kangaroo Fly Ride", price: 48.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/kangaroo_256601391990744684971371644452415126665.png?v=2" },
-            { name: "Frost Dragon Fly Ride", price: 69.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_dragon_288374801322567532732771106755523238591.png?v=2" },
-            { name: "Arctic Reindeer Fly Ride", price: 13.99, img: "https://i.pinimg.com/736x/31/50/c4/3150c4548176b49d160a2d135446bc76.jpg" },
-            { name: "Evil Unicorn Fly Ride", price: 8.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/evil_unicorn_322013027795630172656118720790513444450.png?v=2" },
-            { name: "Neon Owl Fly Ride", price: 21.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/owl_103046694030979270228419086227017441788.png?v=2" },
-            { name: "Neon Giraffe Fly Ride", price: 34.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/giraffe_241345040581239693008299843849746260574.png?v=2" },
-            { name: "Mega Crow Fly Ride", price: 49.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/crow_130478830137781879202388351390130552227.png?v=2" },
-            { name: "Neon Bat Dragon Fly Ride", price: 80.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/bat_dragon_146462647561927032198913846494863876793.png?v=2" },
-        ];
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartButton = document.getElementById('toggle-cart');
+        const cartSection = document.getElementById('cart-section');
+        const cartCounter = document.getElementById('cart-counter');
+        const cartItems = document.getElementById('cart-items');
+        const totalElement = document.getElementById('total');
+        const notification = document.getElementById('notification');
+        const productsContainer = document.getElementById('products');
 
-        let cart = [];
-        let total = 0;
-
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            total += price;
-            updateCartUI();
-            showNotification(`${name} added to cart!`);
-            updateCartCounter();
-        }
-
-        function removeFromCart(index) {
-            total -= cart[index].price;
-            cart.splice(index, 1);
-            updateCartUI();
-            updateCartCounter();
-        }
-
-        function updateCartUI() {
-            const cartList = document.getElementById("cart");
-            cartList.innerHTML = "";
-            cart.forEach((item, index) => {
-                const li = document.createElement("li");
-                li.innerHTML = `<span>${item.name} - €${item.price}</span> 
-                    <button onclick="removeFromCart(${index})">Remove</button>`;
-                cartList.appendChild(li);
-            });
-            document.getElementById("total").textContent = `Total: €${total.toFixed(2)}`;
-            renderPayPalButton();
-        }
-
-        function updateCartCounter() {
-            const cartCounter = document.getElementById("cart-counter");
+        // Funzione per calcolare il totale
+        function updateTotal() {
+            let total = cart.reduce((sum, product) => sum + product.price, 0);
+            totalElement.textContent = 'Totale: €' + total.toFixed(2);
             cartCounter.textContent = cart.length;
-            // Il contatore del carrello è visibile solo quando ci sono elementi nel carrello
-            cartCounter.style.display = cart.length > 0 ? "block" : "none";
         }
 
-        function renderPayPalButton() {
-            if (cart.length > 0) {
-                paypal.Buttons({
-                    createOrder: function(data, actions) {
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: total.toFixed(2)
-                                }
-                            }]
-                        });
-                    },
-                    onApprove: function(data, actions) {
-                        return actions.order.capture().then(function(details) {
-                            alert('Transaction completed by ' + details.payer.name.given_name);
-                        });
-                    }
-                }).render('#paypal-button-container');
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById("notification");
-            notification.textContent = message;
-            notification.style.display = "block";
-            setTimeout(function() {
-                notification.style.display = "none";
-            }, 3000);
-        }
-
+        // Funzione per mostrare o nascondere il carrello
         function toggleCart() {
-            const cartSection = document.getElementById("cart-section");
-            cartSection.style.display = cartSection.style.display === "none" || !cartSection.style.display ? "block" : "none";
+            cartSection.style.display = cartSection.style.display === 'block' ? 'none' : 'block';
         }
 
-        document.getElementById("toggle-cart").addEventListener("click", toggleCart);
+        // Funzione per rimuovere gli articoli dal carrello
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+            updateTotal();
+        }
 
-        window.onload = function() {
-            const productList = document.getElementById("product-list");
-            products.forEach(product => {
-                const productDiv = document.createElement("div");
-                productDiv.classList.add("product");
-                productDiv.innerHTML = `
-                    <img src="${product.img}" alt="${product.name}">
+        // Funzione per rendere visibile la notifica
+        function showNotification() {
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        // Funzione per caricare i prodotti
+        function loadProducts() {
+            const products = [
+                { name: 'Cane', description: 'Un simpatico cane', price: 50, image: 'images/dog.jpg' },
+                { name: 'Gatto', description: 'Un dolce gatto', price: 40, image: 'images/cat.jpg' }
+            ];
+
+            products.forEach((product, index) => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+                productElement.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
                     <h3>${product.name}</h3>
-                    <p>€${product.price}</p>
-                    <button onclick="addToCart('${product.name}', ${product.price})">Add to cart</button>
+                    <p>${product.description}</p>
+                    <p>€${product.price.toFixed(2)}</p>
+                    <button onclick="addToCart(${index})">Aggiungi al carrello</button>
                 `;
-                productList.appendChild(productDiv);
+                productsContainer.appendChild(productElement);
             });
         }
+
+        // Funzione per aggiungere al carrello
+        function addToCart(index) {
+            const product = [
+                { name: 'Cane', description: 'Un simpatico cane', price: 50, image: 'images/dog.jpg' },
+                { name: 'Gatto', description: 'Un dolce gatto', price: 40, image: 'images/cat.jpg' }
+            ][index];
+
+            cart.push(product);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            showNotification();
+            updateTotal();
+        }
+
+        // Funzione per renderizzare il carrello
+        function renderCart() {
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${item.name} - €${item.price.toFixed(2)}</span>
+                    <button onclick="removeFromCart(${index})">Rimuovi</button>
+                `;
+                cartItems.appendChild(li);
+            });
+        }
+
+        // Event listener per il pulsante carrello
+        cartButton.addEventListener('click', toggleCart);
+
+        // Carica i prodotti e il carrello
+        loadProducts();
+        updateTotal();
+        renderCart();
     </script>
 </body>
 </html>
