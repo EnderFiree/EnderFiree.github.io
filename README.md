@@ -273,16 +273,19 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AZxfqNzIB_vmIsIyI-j8y5effKA3WbJRsj0xRNUbV519wBwaI3UfCTP9OuTRtJ4p4Hx_LM0oP8TCzW2f&currency=EUR"></script>
     <script>
         const products = [
-            { name: "Pet 1", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 2", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 3", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 4", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 5", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 6", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 7", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 8", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 9", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
-            { name: "Pet 10", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
+            { name: "Neon Dragon Fly Ride", price: 2.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/dragon_124403728485816668684803314274571297384.png?v=2" },
+            { name: "Golden Unicorn Fly Ride", price: 10.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/golden_unicorn_298238286076469622083342459086715019609.png?v=2" },
+            { name: "Frost Fury Fly Ride", price: 28.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_fury_338054152804925491180175985441581445553.png?v=2" },
+            { name: "Shadow Dragon Fly Ride", price: 79.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/shadow_dragon_145223320826250720186133074893373364978.png?v=2" },
+            { name: "Neon Turtle Fly Ride", price: 36.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/turtle_66206713544449291159512730973707281506.png?v=2" },
+            { name: "Neon Kangaroo Fly Ride", price: 48.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/kangaroo_256601391990744684971371644452415126665.png?v=2" },
+            { name: "Frost Dragon Fly Ride", price: 69.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/frost_dragon_288374801322567532732771106755523238591.png?v=2" },
+            { name: "Arctic Reindeer Fly Ride", price: 13.99, img: "https://i.pinimg.com/736x/31/50/c4/3150c4548176b49d160a2d135446bc76.jpg" },
+            { name: "Evil Unicorn Fly Ride", price: 8.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/evil_unicorn_322013027795630172656118720790513444450.png?v=2" },
+            { name: "Neon Owl Fly Ride", price: 21.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/owl_103046694030979270228419086227017441788.png?v=2" },
+            { name: "Neon Giraffe Fly Ride", price: 34.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/giraffe_241345040581239693008299843849746260574.png?v=2" },
+            { name: "Mega Crow Fly Ride", price: 49.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/crow_130478830137781879202388351390130552227.png?v=2" },
+            { name: "Neon Bat Dragon Fly Ride", price: 80.99, img: "https://starpets.ams3.cdn.digitaloceanspaces.com/AM/bat_dragon_146462647561927032198913846494863876793.png?v=2" },
         ];
 
         let cart = [];
@@ -319,6 +322,7 @@
         function updateCartCounter() {
             const cartCounter = document.getElementById("cart-counter");
             cartCounter.textContent = cart.length;
+            // Il contatore del carrello è visibile solo quando ci sono elementi nel carrello
             cartCounter.style.display = cart.length > 0 ? "block" : "none";
         }
 
@@ -354,4 +358,25 @@
 
         function toggleCart() {
             const cartSection = document.getElementById("cart-section");
-            cartSection.style.display = cartSection.style.display === "none" || !cartSection.style.display ? "block"
+            cartSection.style.display = cartSection.style.display === "none" || !cartSection.style.display ? "block" : "none";
+        }
+
+        document.getElementById("toggle-cart").addEventListener("click", toggleCart);
+
+        window.onload = function() {
+            const productList = document.getElementById("product-list");
+            products.forEach(product => {
+                const productDiv = document.createElement("div");
+                productDiv.classList.add("product");
+                productDiv.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>€${product.price}</p>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Add to cart</button>
+                `;
+                productList.appendChild(productDiv);
+            });
+        }
+    </script>
+</body>
+</html>
